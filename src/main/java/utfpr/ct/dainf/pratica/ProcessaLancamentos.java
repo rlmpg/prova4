@@ -1,4 +1,4 @@
-package utfpr.ct.dainf.if62c.avaliacao;
+package utfpr.ct.dainf.pratica;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,32 +12,27 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- * IF62C Fundamentos de Programação 2
- * Avaliação parcial.
- * @author 
+ * Linguagem Java
+ * @author
  */
 public class ProcessaLancamentos {
-    
     private BufferedReader reader;
     private List<Lancamento> lancamentos;
-
+    
     public ProcessaLancamentos(File arquivo) throws FileNotFoundException {
-        
-        reader = new BufferedReader(new FileReader(arquivo));
+        throw new UnsupportedOperationException("Não implementado");
     }
 
     public ProcessaLancamentos(String path) throws FileNotFoundException {
-        
         reader = new BufferedReader(new FileReader(new File(path)));
     }
     
     private String getNextLine() throws IOException {
-        
         return reader.readLine();
     }
     
     private Lancamento processaLinha(String linha) {
-        
+                
         Integer ano, mes, dia, conta;
         double valor;
         String descricao;
@@ -56,7 +51,7 @@ public class ProcessaLancamentos {
     }
     
     private Lancamento getNextLancamento() throws IOException {
-        
+                
         String linha = this.getNextLine();
         
         if(linha != null){
@@ -66,7 +61,6 @@ public class ProcessaLancamentos {
     }
     
     public List<Lancamento> getLancamentos() throws IOException {
-        
         Lancamento atual;
         lancamentos = new ArrayList<>();
         
@@ -79,5 +73,5 @@ public class ProcessaLancamentos {
         
         return lancamentos;
     }
-
+    
 }
