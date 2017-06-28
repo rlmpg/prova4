@@ -17,14 +17,13 @@ import java.util.List;
  */
 public class ProcessaLancamentos {
     private BufferedReader reader;
-    private List<Lancamento> lancamentos;
-    
+
     public ProcessaLancamentos(File arquivo) throws FileNotFoundException {
-        throw new UnsupportedOperationException("Não implementado");
+        reader = new BufferedReader(new FileReader(arquivo));
     }
 
     public ProcessaLancamentos(String path) throws FileNotFoundException {
-        reader = new BufferedReader(new FileReader(new File(path)));
+        this(new File(path));
     }
     
     private String getNextLine() throws IOException {
@@ -32,45 +31,33 @@ public class ProcessaLancamentos {
     }
     
     private Lancamento processaLinha(String linha) {
-                
-        Integer ano, mes, dia, conta;
-        double valor;
-        String descricao;
-        
-        conta = Integer.parseInt(linha.substring(0, 6));
-        dia = Integer.parseInt(linha.substring(12, 14));
-        mes = Integer.parseInt(linha.substring(10, 12));
-        ano = Integer.parseInt(linha.substring(6, 10));
-        descricao = linha.substring(14, 74).trim();
-        valor = Long.valueOf(linha.substring(74, 86))/100;
-        
-        GregorianCalendar data = new GregorianCalendar(ano, mes-1, dia);
-        Date date = data.getTime();
-        
-        return new Lancamento(conta, date, descricao, valor);
+        Integer conta = Integer.valueOf(linha.substring(0, 6));
+        GregorianCalendar gc = new GregorianCalendar(
+                Integer.parseInt(linha.substring(6, 10)),
+                Integer.parseInt(linha.substring(10, 12))-1,
+                Integer.parseInt(linha.substring(12, 14)));
+        Date data = gc.getTime();
+        String descricao = linha.substring(14, 74).trim();
+        Double valor = Long.valueOf(linha.substring(74, 86)) / 100.0;
+        return new Lancamento(conta, data, descricao, valor);
     }
     
     private Lancamento getNextLancamento() throws IOException {
-                
-        String linha = this.getNextLine();
-        
-        if(linha != null){
-            return this.processaLinha(linha);
-        }
-        else return null;
+        String linha = getNextLine();
+        return linha == null ? null : processaLinha(linha);
     }
     
     public List<Lancamento> getLancamentos() throws IOException {
-        Lancamento atual;
-        lancamentos = new ArrayList<>();
-        
-        while((atual = getNextLancamento()) != null){
-            lancamentos.add(atual);
+        List<Lancamento> lancamentos = new ArrayList<>();
+        Lancamento c;
+        try {
+            while ((c = getNextLancamento()) != null) {
+                lancamentos.add(c);
+            }
+        } finally {
+            reader.close();
         }
-        reader.close();
-        
         Collections.sort(lancamentos, new LancamentoComparator());
-        
         return lancamentos;
     }
     
